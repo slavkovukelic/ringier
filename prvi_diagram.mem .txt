@@ -42,30 +42,34 @@ subgraph CET["CETINJSKA · TELEKOM OPP"]
 direction TB
   CET1["port 1 — SDI\n(Ruijie P6 · YB Matrica)"]:::sdi
   CET2["port 2 — SDI\n(Ruijie P6 · YB Matrica)"]:::sdi
-  CET5["port 5 — FREE"]:::free
-  CET6["port 6 — FREE"]:::free
+  CET5["port 5 — SDI (novo)\n↳ kroz STUD. TRG"]:::sdi
+  CET6["port 6 — bidi (novo)\n↳ kroz STUD. TRG"]:::bidi
 end
 
 subgraph BOR["BORBA · TELEKOM OPP"]
 direction TB
   BOR1["port 1 — SDI\n(Huawei SW P1 SFP28 · BM Matrica)"]:::sdi
   BOR2["port 2 — SDI\n(Huawei SW P1 SFP28 · BM Matrica)"]:::sdi
-  BOR5["port 5 — FREE"]:::free
-  BOR6["port 6 — FREE"]:::free
+  BOR5["port 5 — SDI (novo)\n↳ kroz STUD. TRG"]:::sdi
+  BOR6["port 6 — bidi (novo)\n↳ kroz STUD. TRG"]:::bidi
 end
 
-%% TRASNI ČVOROVI (kao na slici: oba kroz 'Glavna pošta')
-GP1["GLAVNA POŠTA"]:::gp
-GP2["GLAVNA POŠTA"]:::gp
+%% TRANZITNI ČVOROVI
+GP["GLAVNA POŠTA"]:::gp
+ST["STUD. TRG"]:::st
 
-%% VEZE — SVAKA = JEDNO VLAKNO (single-fiber)
-CET1 ---|"single-fiber"| GP1 ---|"single-fiber"| BOR1
-CET2 ---|"single-fiber"| GP1 ---|"single-fiber"| BOR2
+%% VEZE — SINGLE-FIBER
+CET1 ---|"single-fiber"| GP ---|"single-fiber"| BOR1
+CET2 ---|"single-fiber"| GP ---|"single-fiber"| BOR2
 
-CET5 ---|"single-fiber"| GP2 ---|"single-fiber"| BOR5
-CET6 ---|"single-fiber"| GP2 ---|"single-fiber"| BOR6
+CET5 ---|"single-fiber"| ST ---|"single-fiber"| BOR5
+
+%% VEZE — BIDI (2 vlakna / port-par)
+CET6 -- "bidi" --- ST -- "bidi" --- BOR6
 
 %% STILOVI
 classDef sdi fill:#fff3e6,stroke:#c96,stroke-width:1px;
 classDef free fill:#f7f7f7,stroke:#bbb,stroke-width:1px,stroke-dasharray:3 2;
 classDef gp fill:#fdebd2,stroke:#b97,stroke-width:1px;
+classDef st fill:#e5f1fb,stroke:#67a,stroke-width:1px;
+classDef bidi fill:#eef7e9,stroke:#6a6,stroke-width:1px;
