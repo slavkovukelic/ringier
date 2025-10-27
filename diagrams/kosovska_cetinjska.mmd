@@ -4,8 +4,8 @@ flowchart LR
 subgraph KOS["KOSOVSKA · TELEKOM OPP"]
 direction TB
   K56["KOS 5–6  (duplex)\n↳ Huawei Core1 · port P26"]
-  K78["KOS 7–8  (duplex)\n↳ Huawei SW · port P4 (preko krova u Borbu)"]
-  K1112["KOS 11–12 (duplex)\n↳ trenutno FREE na KOS OPP"]
+  K78["KOS 7–8  (bidi)\n↳ Huawei SW · port P4 (ruta STUD. TRG)"]
+  K1112["KOS 11–12 (bidi · rezerva)\n↳ dodatni par preko GLAVNE POŠTE"]
   KCORE["KOS core↔core (bidi)\n↳ Huawei Core1 · P13 ⇆ Huawei Core2 · P14"]
   KRU["KOS core↔Ruijie (bidi)\n↳ Huawei Core1 · P27 ⇆ Ruijie SW · P9"]
 end
@@ -13,18 +13,23 @@ end
 subgraph CET["CETINJSKA · TELEKOM OPP"]
 direction TB
   C34["CET 3–4  (duplex)\n↳ Ruijie · port P5"]
-  C56["CET 5–6  (duplex)\n↳ Ruijie · port P24"]
-  C78["CET 7–8  (duplex)\n↳ FREE"]
+  C56["CET 5–6  (bidi)\n↳ Ruijie · port P24 (ruta STUD. TRG)"]
+  C78["CET 7–8  (bidi · rezerva)\n↳ dodatni par preko GLAVNE POŠTE"]
   CCORE["CET core↔core (bidi)\n↳ Huawei Core1 · P21 ⇆ Huawei Core2 · P22"]
   CRU["CET core↔Ruijie (bidi)\n↳ Huawei Core1 · P28 ⇆ Ruijie SW · P11"]
 end
 
 %% TRANZITNI ČVOROVI
-GP["GLAVNA POŠTA\n(tranzit za core↔core)"]
-ST["STUD. TRG\n(tranzit za switch↔switch)"]
+GP["GLAVNA POŠTA\n(tranzit za GP rute)"]
+ST["STUD. TRG\n(tranzit za ST rute)"]
 
 %% VEZE (svaka = bidi, 2 vlakna / port-par)
 KCORE -- bidi --- GP -- bidi --- CCORE
+K1112 -- bidi --- GP -- bidi --- C78
 KRU -- bidi --- ST -- bidi --- CRU
+K78 -- bidi --- ST -- bidi --- C56
 
-%% Napomena: stari duplex scenariji na ovim rutama su zamenjeni bi-di vezama kroz oba tranzitna čvora (GLAVNA POŠTA i STUD. TRG)
+%% Napomene:
+%% · Link preko krova je deaktiviran.
+%% · Dva bidi para vode preko GLAVNE POŠTE (jedan aktivan + jedan rezervni/slobodan).
+%% · Dva bidi para vode preko STUD. TRGA za redundantnu switch vezu.
