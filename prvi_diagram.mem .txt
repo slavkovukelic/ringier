@@ -1,0 +1,66 @@
+flowchart LR
+
+%% LOKACIJE
+subgraph KOS["KOSOVSKA · TELEKOM OPP"]
+direction TB
+  K56["KOS 5–6  (duplex)\n↳ Huawei Core1 · port P26"] 
+  K78["KOS 7–8  (duplex)\n↳ Huawei SW · port P4 (preko krova u Borbu)"]
+  K1112["KOS 11–12 (duplex)\n↳ trenutno FREE na KOS OPP"]
+end
+
+subgraph CET["CETINJSKA · TELEKOM OPP"]
+direction TB
+  C34["CET 3–4  (duplex)\n↳ Ruijie · port P5"]
+  C56["CET 5–6  (duplex)\n↳ Ruijie · port P24"]
+  C78["CET 7–8  (duplex)\n↳ FREE"]
+end
+
+%% TRANZITNI ČVOROVI
+GP1["GLAVNA POŠTA"]
+GP2["GLAVNA POŠTA"]
+SG["STUD. GRAD"]
+
+%% VEZE (svaka = duplex, 2 vlakna / port-par)
+K56 ---|"duplex · 2 vlakna"| GP1 --- C34
+K78 ---|"duplex · 2 vlakna"| GP2 --- C56
+K1112 ---|"duplex · 2 vlakna"| SG --- C78
+
+
+
+drugi diagram 
+
+
+flowchart LR
+
+%% LOKACIJE
+subgraph CET["CETINJSKA · TELEKOM OPP"]
+direction TB
+  CET1["port 1 — SDI\n(Ruijie P6 · YB Matrica)"]:::sdi
+  CET2["port 2 — SDI\n(Ruijie P6 · YB Matrica)"]:::sdi
+  CET5["port 5 — FREE"]:::free
+  CET6["port 6 — FREE"]:::free
+end
+
+subgraph BOR["BORBA · TELEKOM OPP"]
+direction TB
+  BOR1["port 1 — SDI\n(Huawei SW P1 SFP28 · BM Matrica)"]:::sdi
+  BOR2["port 2 — SDI\n(Huawei SW P1 SFP28 · BM Matrica)"]:::sdi
+  BOR5["port 5 — FREE"]:::free
+  BOR6["port 6 — FREE"]:::free
+end
+
+%% TRASNI ČVOROVI (kao na slici: oba kroz 'Glavna pošta')
+GP1["GLAVNA POŠTA"]:::gp
+GP2["GLAVNA POŠTA"]:::gp
+
+%% VEZE — SVAKA = JEDNO VLAKNO (single-fiber)
+CET1 ---|"single-fiber"| GP1 ---|"single-fiber"| BOR1
+CET2 ---|"single-fiber"| GP1 ---|"single-fiber"| BOR2
+
+CET5 ---|"single-fiber"| GP2 ---|"single-fiber"| BOR5
+CET6 ---|"single-fiber"| GP2 ---|"single-fiber"| BOR6
+
+%% STILOVI
+classDef sdi fill:#fff3e6,stroke:#c96,stroke-width:1px;
+classDef free fill:#f7f7f7,stroke:#bbb,stroke-width:1px,stroke-dasharray:3 2;
+classDef gp fill:#fdebd2,stroke:#b97,stroke-width:1px;
