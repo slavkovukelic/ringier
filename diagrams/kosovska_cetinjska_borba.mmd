@@ -1,0 +1,81 @@
+flowchart LR
+
+%% --- LEVO: KOSOVSKA ---
+subgraph KOS["KOSOVSKA · TELEKOM OPP"]
+direction TB
+  K5["5 — Hua Core1-bidi-P26"]
+  K6["6 — Arista1-DC-bidi-P25"]
+  K7["7 — FREE"]
+  K8["8 — FREE"]
+  K11["11 — Hua Core2-bidi-P26"]
+  K12["12 — Arista2-DC-bidi-P25"]
+end
+
+%% --- SREDINA: CETINJSKA (Panel B gore, Panel A dole) ---
+subgraph CET["CETINJSKA · TELEKOM OPP"]
+direction TB
+  subgraph CET_B["Panel B"]
+  direction TB
+    CB1["1 — SDI · (YB Matrica)"]
+    CB2["2 — Ruijie1-bidi-P6"]
+    CB5["5 — SDI · (YB Matrica)"]
+    CB6["6 — Ruijie2-bidi-P6"]
+  end
+  subgraph CET_A["Panel A"]
+  direction TB
+    CA3["3 — Ruijie1-bidi-P5"]
+    CA4["4 — Arista1-DR-bidi-P25"]
+    CA5["5 — FREE"]
+    CA6["6 — FREE"]
+    CA7["7 — Ruijie2-bidi-P5"]
+    CA8["8 — Arista2-DR-bidi-P25"]
+  end
+end
+
+%% --- DESNO: BORBA ---
+subgraph BOR["BORBA · TELEKOM OPP"]
+direction TB
+  B1["1 — SDI · (BM Matrica)"]
+  B2["2 — Hua SW1-bidi-P1 SFP28"]
+  B5["5 — SDI · (BM Matrica)"]
+  B6["6 — Hua SW2-bidi-P1 SFP28"]
+end
+
+%% --- TRANZITNI ČVOROVI (ovalno) ---
+GP_A(("GLAVNA POŠTA"))
+GP_B(("GLAVNA POŠTA"))
+SG(("STUD. GRAD"))
+
+GP_SDIA(("GLAVNA POŠTA"))
+GP_SDIB(("STUD. GRAD"))
+
+%% --- KOS ↔ CET ---
+K5 ---|par 5→3| GP_A ---|par 5→3| CA3
+K6 ---|par 6→4| GP_A ---|par 6→4| CA4
+
+K7 ---|par 7→5| GP_B ---|par 7→5| CA5
+K8 ---|par 8→6| GP_B ---|par 8→6| CA6
+
+K11 ---|par 11→7| SG ---|par 11→7| CA7
+K12 ---|par 12→8| SG ---|par 12→8| CA8
+
+%% --- CET (Panel B) ↔ BOR ---
+CB1 ---|par 1↔1| GP_SDIA ---|par 1↔1| B1
+CB2 ---|par 2↔2| GP_SDIA ---|par 2↔2| B2
+
+CB5 ---|par 5↔5| GP_SDIB ---|par 5↔5| B5
+CB6 ---|par 6↔6| GP_SDIB ---|par 6↔6| B6
+
+%% ====== BOJE ======
+classDef sdi fill:#ffe9cc,stroke:#cc8a29,stroke-width:1px
+classDef arista fill:#e7f0ff,stroke:#4d7edb,stroke-width:1px
+classDef hv_rj fill:#e8f7ec,stroke:#3c9d5e,stroke-width:1px
+classDef free fill:#f2f2f2,stroke:#bcbcbc,stroke-width:1px
+classDef studgrad fill:#fff0f6,stroke:#d6336c,stroke-width:1px
+
+class CB1,CB5,B1,B5 sdi
+class K6,K12,CA4,CA8 arista
+class K5,K11,CB2,CB6,CA3,CA7,B2,B6 hv_rj
+class K7,K8,CA5,CA6 free
+
+class SG,GP_SDIB studgrad
