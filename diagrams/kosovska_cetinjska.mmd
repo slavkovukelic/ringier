@@ -1,35 +1,68 @@
 flowchart LR
 
-%% LOKACIJE
+%% STILOVI
+classDef bidi fill:#eef7e9,stroke:#6a6,stroke-width:1px;
+classDef duplex fill:#e8f0fb,stroke:#6a7,stroke-width:1px;
+classDef free fill:#f7f7f7,stroke:#bbb,stroke-width:1px,stroke-dasharray:3 2;
+classDef transit fill:#fdebd2,stroke:#b97,stroke-width:1px;
+
+%% LOKACIJE — SVAKI PORT POSEBNO
 subgraph KOS["KOSOVSKA · TELEKOM OPP"]
 direction TB
-  K56["KOS 5–6  (duplex)\n↳ Huawei Core1 · port P26"]
-  KCORE["KOS core↔core (bidi)\n↳ Huawei Core1 · P13 ⇆ Huawei Core2 · P14"]
-  K11["KOS 11  (bidi · rezerva)\n↳ dodatni vod kroz GLAVNU POŠTU (iz para 11–12)"]
-  K7["KOS 7  (bidi)\n↳ Huawei SW · port P4 (ruta STUD. TRG · iz para 7–8)"]
-  KRU["KOS core↔Ruijie (bidi)\n↳ Huawei Core1 · P27 ⇆ Ruijie SW · P9"]
+  K1["1 — core↔core (bidi)\n↳ Huawei Core1 · P13 ⇆ Huawei Core2 · P14"]:::bidi
+  K2["2 — FREE"]:::free
+  K3["3 — FREE"]:::free
+  K4["4 — FREE"]:::free
+  K5["5 — duplex · Tx\n↳ Huawei Core1 · P26 (uplink)"]:::duplex
+  K6["6 — duplex · Rx\n↳ Huawei Core1 · P26 (uplink)"]:::duplex
+  K7["7 — bidi\n↳ Huawei SW · P4 (ruta STUD. TRG · iz para 7–8)"]:::bidi
+  K8["8 — FREE (par 7–8)"]:::free
+  K9["9 — core↔Ruijie (bidi)\n↳ Huawei Core1 · P27 ⇆ Ruijie SW · P9"]:::bidi
+  K10["10 — FREE"]:::free
+  K11["11 — bidi (rezerva)\n↳ dodatni vod kroz GLAVNU POŠTU (iz para 11–12)"]:::bidi
+  K12["12 — FREE (par 11–12)"]:::free
 end
 
 subgraph CET["CETINJSKA · TELEKOM OPP"]
 direction TB
-  C34["CET 3–4  (duplex)\n↳ Ruijie · port P5"]
-  CCORE["CET core↔core (bidi)\n↳ Huawei Core1 · P21 ⇆ Huawei Core2 · P22"]
-  C7R["CET 7  (bidi · rezerva)\n↳ dodatni vod kroz GLAVNU POŠTU (iz para 7–8)"]
-  C5["CET 5  (bidi)\n↳ Ruijie · port P24 (ruta STUD. TRG · iz para 5–6)"]
-  CRU["CET core↔Ruijie (bidi)\n↳ Huawei Core1 · P28 ⇆ Ruijie SW · P11"]
+  C1["1 — core↔core (bidi)\n↳ Huawei Core1 · P21 ⇆ Huawei Core2 · P22"]:::bidi
+  C2["2 — FREE"]:::free
+  C3["3 — duplex · Rx\n↳ Ruijie · port P5"]:::duplex
+  C4["4 — duplex · Tx\n↳ Ruijie · port P5"]:::duplex
+  C5["5 — bidi\n↳ Ruijie · port P24 (ruta STUD. TRG · iz para 5–6)"]:::bidi
+  C6["6 — FREE (par 5–6)"]:::free
+  C7["7 — bidi (rezerva)\n↳ dodatni vod kroz GLAVNU POŠTU (iz para 7–8)"]:::bidi
+  C8["8 — FREE (par 7–8)"]:::free
+  C9["9 — core↔Ruijie (bidi)\n↳ Huawei Core1 · P28 ⇆ Ruijie SW · P11"]:::bidi
+  C10["10 — FREE"]:::free
+  C11["11 — FREE"]:::free
+  C12["12 — FREE"]:::free
 end
 
 %% TRANZITNI ČVOROVI
-GP["GLAVNA POŠTA\n(tranzit za GP rute)"]
-ST["STUD. TRG\n(tranzit za ST rute)"]
+subgraph GP["GLAVNA POŠTA"]
+direction TB
+  GPcore["GP — core↔core patch (bidi)"]:::transit
+  GPrez["GP — rezerva (bidi · par 11–12)"]:::transit
+end
 
-%% VEZE (svaka = bidi, 1 vlakno / port)
-KCORE -- bidi --- GP -- bidi --- CCORE
-K11 -- bidi --- GP -- bidi --- C7R
-K7 -- bidi --- ST -- bidi --- C5
-KRU -- bidi --- ST -- bidi --- CRU
+subgraph ST["STUD. TRG"]
+direction TB
+  STmain["ST — glavna bidi ruta"]:::transit
+  STsw["ST — redundantna switch veza (bidi)"]:::transit
+end
+
+%% VEZE (svaki port zasebno)
+K1 -- "bidi" --- GPcore -- "bidi" --- C1
+K11 -- "bidi" --- GPrez -- "bidi" --- C7
+
+K7 -- "bidi" --- STmain -- "bidi" --- C5
+K9 -- "bidi" --- STsw -- "bidi" --- C9
+
+K5 -- "duplex" --- C4
+K6 -- "duplex" --- C3
 
 %% Napomene:
-%% · Link preko krova je deaktiviran.
-%% · Dva bidi para vode preko GLAVNE POŠTE (jedan aktivan + jedan rezervni/slobodan).
-%% · Dva bidi para vode preko STUD. TRGA za redundantnu switch vezu.
+%% · Portovi bez veze su označeni kao FREE radi lakše evidencije.
+%% · Bidi konekcije prolaze kroz posredne čvorove (GLAVNA POŠTA / STUD. TRG).
+%% · Duplex uplink (portovi 5–6 ↔ 3–4) je prikazan kao direktna veza bez tranzitnog čvora.
