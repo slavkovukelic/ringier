@@ -1,0 +1,1016 @@
+!Software Version V200R022C00SPC500
+#
+sysname Core-SW2
+#
+vlan batch 2 to 5 11 to 18 21 to 28 31 to 33 41 to 42 51 to 54 61 to 62 65 70 to 71 80 to 81
+vlan batch 90 92 143 to 145 200 210 300 304 to 305 312 to 313 340 350
+vlan batch 620 1331 2354 2641
+#
+stp mode vbst
+stp instance 0 root primary
+#
+authentication-profile name default_authen_profile
+authentication-profile name dot1x_authen_profile
+authentication-profile name dot1xmac_authen_profile
+authentication-profile name mac_authen_profile
+authentication-profile name multi_authen_profile
+authentication-profile name portal_authen_profile
+#
+domain freeradius
+#
+stp vlan 1 to 4094 priority 8192
+#
+ip netstream export version 9
+ip netstream export source 172.27.100.1
+ip netstream export host 172.27.160.23 2055
+#
+telnet server enable
+telnet server-source all-interface
+#
+http server load s6730-h-v200r022c00spc500.1801.web.7z
+http server-source all-interface
+#
+dhcp enable
+#
+diffserv domain default
+#
+radius-server template default
+radius-server template freeradius
+ radius-server shared-key cipher %^%#Qmj((D=o&'DpX~:vYpcLbN3dKruzGBmA4KJC4gS"%^%#
+ radius-server authentication 172.27.121.10 1812 source ip-address 172.27.100.1 weight 80
+ radius-server accounting 172.27.121.10 1813 source ip-address 172.27.100.1 weight 80
+ radius-server retransmit 2
+ undo radius-server user-name domain-included
+#
+ip netstream record inet
+ match ip source-address
+ match ip destination-address
+ match ip destination-port
+ match ip protocol
+ collect counter packets
+ collect counter bytes
+ collect interface input
+ collect interface output
+#
+pki realm default
+ certificate-check none
+#
+free-rule-template name default_free_rule
+#
+portal-access-profile name portal_access_profile
+#
+drop-profile default
+#
+vlan 2
+ description SRV1
+vlan 3
+ description SRV2
+vlan 4
+ description SRV_BACKUP
+vlan 5
+ description VIDEO_NADZOR
+vlan 11
+ description S-1_SW1
+vlan 12
+ description S-1_SW2
+vlan 13
+ description S-1_SW3
+vlan 14
+ description R1_SW4
+vlan 15
+ description R1_SW5
+vlan 16
+ description R1_SW6
+vlan 17
+ description R1_SW7
+vlan 18
+ description R1_SW8
+vlan 21
+ description S2_SW1
+vlan 22
+ description R2_SW2
+vlan 23
+ description S2_SW3
+vlan 24
+ description S2_SW4
+vlan 25
+ description S2_SW5
+vlan 26
+ description S2_SW6
+vlan 27
+ description S2_SW7
+vlan 28
+ description S2_SW8
+vlan 31
+ description R3_SW1
+vlan 32
+ description R3_SW2
+vlan 33
+ description R3_SW3
+vlan 41
+ description R4_SW1
+vlan 42
+ description R4_SW2
+vlan 51
+ description R5_SW1
+vlan 52
+ description R5_SW2
+vlan 53
+ description R5_SW3
+vlan 54
+ description R5_SW4
+vlan 61
+ description R6_SW1
+vlan 62
+ description R6_SW2
+vlan 71
+ description R7_SW1
+vlan 80
+ description CETINJSKA_10
+vlan 92
+ description UPLINK_MIKROTIK_CETINJSKA_10
+vlan 200
+ description MANAGEMENT
+vlan 300
+ description VmWare_RAS_Prod
+vlan 304
+ description PHISICAL_1
+vlan 305
+ description PHISICAL_2
+vlan 312
+ description Serveri_RAS_1
+vlan 313
+ description Serveri_RAS_2
+vlan 340
+ description PRINTERS
+vlan 350
+ description IT_Computers
+#
+ip pool phisical1
+ gateway-list 172.27.204.1
+ network 172.27.204.0 mask 255.255.255.0
+ excluded-ip-address 172.27.204.2 172.27.204.200
+ lease day 30 hour 0 minute 0
+ domain-name rasrbija.local
+#
+ip pool phisical2
+ gateway-list 172.27.205.1
+ network 172.27.205.0 mask 255.255.255.0
+ excluded-ip-address 172.27.205.2 172.27.205.200
+ lease day 30 hour 0 minute 0
+ domain-name rasrbija.local
+#
+ip pool printers
+ gateway-list 172.27.240.1
+ network 172.27.240.0 mask 255.255.255.0
+ excluded-ip-address 172.27.240.2 172.27.240.200
+ lease day 30 hour 0 minute 0
+ domain-name rasrbija.local
+#
+ip pool r5_sw1
+ gateway-list 172.27.51.1
+ network 172.27.51.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r5_sw2
+ gateway-list 172.27.52.1
+ network 172.27.52.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r5_sw3
+ gateway-list 172.27.53.1
+ network 172.27.53.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r5_sw4
+ gateway-list 172.27.54.1
+ network 172.27.54.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r6_sw1
+ gateway-list 172.27.61.1
+ network 172.27.61.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r6_sw2
+ gateway-list 172.27.62.1
+ network 172.27.62.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r7_sw1
+ gateway-list 172.27.71.1
+ network 172.27.71.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r1_sw1
+ gateway-list 172.27.11.1
+ network 172.27.11.0 mask 255.255.255.0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool it_computers
+ gateway-list 172.27.250.1
+ network 172.27.250.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+ option 43 ip-address 172.27.250.2
+#
+ip pool video_nadzor
+ gateway-list 172.27.4.1
+ network 172.27.4.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r1_sw8
+ gateway-list 172.27.18.1
+ network 172.27.18.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r1_sw2
+ gateway-list 172.27.12.1
+ network 172.27.12.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r1_sw3
+ gateway-list 172.27.13.1
+ network 172.27.13.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r2_sw1
+ gateway-list 172.27.21.1
+ network 172.27.21.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r2_sw2
+ gateway-list 172.27.22.1
+ network 172.27.22.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r2_sw3
+ gateway-list 172.27.23.1
+ network 172.27.23.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r3_sw1
+ gateway-list 172.27.31.1
+ network 172.27.31.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r3_sw2
+ gateway-list 172.27.32.1
+ network 172.27.32.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r4_sw1
+ gateway-list 172.27.41.1
+ network 172.27.41.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool r4_sw2
+ gateway-list 172.27.42.1
+ network 172.27.42.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool srv1
+ gateway-list 172.27.0.1
+ network 172.27.0.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool srv2
+ gateway-list 172.27.1.1
+ network 172.27.1.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool srv_backup
+ gateway-list 172.27.3.1
+ network 172.27.3.0 mask 255.255.255.0
+ lease day 45 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool s2_sw4
+ gateway-list 172.27.24.1
+ network 172.27.24.0 mask 255.255.255.0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool s2_sw5
+ gateway-list 172.27.25.1
+ network 172.27.25.0 mask 255.255.255.0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool s2_sw6
+ gateway-list 172.27.26.1
+ network 172.27.26.0 mask 255.255.255.0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool s2_sw7
+ gateway-list 172.27.27.1
+ network 172.27.27.0 mask 255.255.255.0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool s2_sw8
+ gateway-list 172.27.28.1
+ network 172.27.28.0 mask 255.255.255.0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+ip pool sportal_studio_kos
+ gateway-list 172.27.92.2
+ network 172.27.92.0 mask 255.255.255.0
+ dns-list 8.8.8.8 8.8.4.4
+#
+ip pool sprat7
+ gateway-list 172.27.70.1
+ network 172.27.70.0 mask 255.255.255.0
+ lease day 7 hour 0 minute 0
+ dns-list 172.27.120.20 172.27.121.20
+ domain-name RASRBIJA.local
+#
+aaa
+ authentication-scheme auth
+  authentication-mode local
+ authentication-scheme default
+  authentication-mode radius local
+ authentication-scheme freeradius
+  authentication-mode radius local
+ authentication-scheme radius
+  authentication-mode radius local
+ authorization-scheme autho
+  authorization-mode local
+ authorization-scheme default
+  authorization-mode local
+ accounting-scheme default
+  accounting-mode none
+ accounting-scheme freeradius
+  accounting-mode radius
+ local-aaa-user password policy administrator
+  password history record number 0
+  password expire 0
+ domain default_admin domain-index 1
+  authentication-scheme freeradius
+  accounting-scheme freeradius
+  radius-server freeradius
+ domain default
+  authentication-scheme freeradius
+  accounting-scheme freeradius
+  radius-server freeradius
+ domain freeradius
+  authentication-scheme freeradius
+  accounting-scheme freeradius
+  radius-server freeradius
+ undo local-aaa-user change-password verify
+ local-user slavko password irreversible-cipher $1c$R}UDILWu(1$=&_&:]r};3X9PG6oQG78`_R<*O|&}>$cI"$saI\"$
+ local-user slavko privilege level 15
+ local-user slavko service-type telnet terminal ssh http
+#
+interface Vlanif1
+#
+interface Vlanif2
+ ip address 172.27.0.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif3
+ ip address 172.27.1.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif4
+ ip address 172.27.3.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif5
+ ip address 172.27.4.1 255.255.255.0
+#
+interface Vlanif11
+ ip address 172.27.11.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif12
+ ip address 172.27.12.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif13
+ ip address 172.27.13.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif14
+ shutdown
+ ip address 172.27.14.1 255.255.255.0
+#
+interface Vlanif15
+ shutdown
+ ip address 172.27.15.1 255.255.255.0
+#
+interface Vlanif16
+ shutdown
+ ip address 172.27.16.1 255.255.255.0
+#
+interface Vlanif17
+ ip address 172.27.17.1 255.255.255.0
+#
+interface Vlanif18
+ ip address 172.27.18.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif21
+ ip address 172.27.21.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif22
+ ip address 172.27.22.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif23
+ ip address 172.27.23.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif24
+ ip address 172.27.24.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif25
+ ip address 172.27.25.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif26
+ ip address 172.27.26.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif27
+ ip address 172.27.27.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif28
+ ip address 172.27.28.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif31
+ shutdown
+ ip address 172.27.31.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif32
+ shutdown
+ ip address 172.27.32.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif33
+ shutdown
+ ip address 172.27.33.1 255.255.255.0
+#
+interface Vlanif41
+ shutdown
+ ip address 172.27.41.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif42
+ shutdown
+ ip address 172.27.42.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif51
+ shutdown
+ ip address 172.27.51.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif52
+ shutdown
+ ip address 172.27.52.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif53
+ shutdown
+ ip address 172.27.53.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif54
+ shutdown
+ ip address 172.27.54.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif61
+ shutdown
+ ip address 172.27.61.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif62
+ shutdown
+ ip address 172.27.62.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif65
+ ip address 172.27.65.1 255.255.255.0
+#
+interface Vlanif70
+ ip address 172.27.70.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif71
+ shutdown
+ ip address 172.27.71.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif80
+ shutdown
+#
+interface Vlanif81
+ ip address 192.168.1.254 255.255.255.0
+#
+interface Vlanif92
+ ip address 172.27.92.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif143
+ mtu 9000
+ ip address 10.143.0.254 255.255.255.0
+#
+interface Vlanif144
+ ip address 10.144.0.254 255.255.255.0
+#
+interface Vlanif145
+ ip address 172.27.157.1 255.255.255.0
+#
+interface Vlanif200
+ ip address 172.27.100.1 255.255.255.0
+#
+interface Vlanif210
+ ip address 10.27.110.1 255.255.255.252
+#
+interface Vlanif300
+ ip address 172.27.200.1 255.255.255.0
+#
+interface Vlanif304
+ ip address 172.27.204.1 255.255.255.0
+#
+interface Vlanif305
+ ip address 172.27.205.1 255.255.255.0
+#
+interface Vlanif312
+ ip address 172.27.212.1 255.255.255.0
+#
+interface Vlanif313
+ ip address 172.27.213.1 255.255.255.0
+#
+interface Vlanif340
+ ip address 172.27.240.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif350
+ ip address 172.27.250.1 255.255.255.0
+ dhcp select global
+#
+interface Vlanif620
+ ip address 172.27.86.1 255.255.255.0
+#
+interface Vlanif1331
+#
+interface Vlanif2354
+ ip address 172.27.254.50 255.255.255.248
+#
+interface Vlanif2641
+#
+interface MEth0/0/1
+#
+interface Eth-Trunk1
+ port link-type trunk
+ port trunk allow-pass vlan 3 144 210 300 304 313 340 350 1331 2641
+ mode lacp
+#
+interface Eth-Trunk7
+ port link-type trunk
+ port trunk allow-pass vlan 5 70 80 90 304 340 350 1331
+ mode lacp
+#
+interface Eth-Trunk10
+ port link-type trunk
+ port trunk pvid vlan 610
+ port trunk allow-pass vlan 3 5 11 to 13 80 90 92 120 200 300 304 to 305
+ port trunk allow-pass vlan 340 350 610 1331
+ mode lacp
+#
+interface Eth-Trunk12
+ description ETHER_NA_2_SPRAT
+ port link-type trunk
+ port trunk pvid vlan 612
+ port trunk allow-pass vlan 3 21 to 28 80 90 120 200 300 340 350 612
+ port trunk allow-pass vlan 1331
+ mode lacp
+#
+interface 25GE1/0/1
+ port mode ge
+ ip netstream inbound
+ ip netstream outbound
+ eth-trunk 1
+ port ip netstream record inet
+#
+interface 25GE1/0/2
+ port mode ge
+#
+interface 25GE1/0/3
+ port mode ge
+#
+interface 25GE1/0/4
+ port mode ge
+#
+interface 25GE1/0/5
+ eth-trunk 10
+#
+interface 25GE1/0/6
+ eth-trunk 12
+#
+interface 25GE1/0/7
+ eth-trunk 12
+#
+interface 25GE1/0/8
+ eth-trunk 7
+#
+interface 25GE1/0/9
+#
+interface 25GE1/0/10
+#
+interface 25GE1/0/11
+#
+interface 25GE1/0/12
+#
+interface 25GE1/0/13
+#
+interface 25GE1/0/14
+#
+interface 25GE1/0/15
+#
+interface 25GE1/0/16
+#
+interface 25GE1/0/17
+#
+interface 25GE1/0/18
+#
+interface 25GE1/0/19
+#
+interface 25GE1/0/20
+#
+interface 25GE1/0/21
+#
+interface 25GE1/0/22
+#
+interface 25GE1/0/23
+#
+interface 25GE1/0/24
+#
+interface 25GE1/0/25
+#
+interface 25GE1/0/26
+ description Cetinska 10 Trunk
+ port link-type trunk
+ port trunk allow-pass vlan 5 92 304
+#
+interface 25GE1/0/27
+ description Link Coming_DC
+ port link-type access
+ port default vlan 143
+#
+interface 25GE1/0/28
+ description Link Telekom Storage
+ port link-type trunk
+ port trunk pvid vlan 620
+ port trunk allow-pass vlan 620
+#
+interface 25GE2/0/1
+ port mode ge
+ eth-trunk 1
+#
+interface 25GE2/0/2
+ port mode ge
+#
+interface 25GE2/0/3
+ port mode ge
+#
+interface 25GE2/0/4
+ port mode ge
+#
+interface 25GE2/0/5
+ eth-trunk 10
+#
+interface 25GE2/0/6
+ eth-trunk 12
+#
+interface 25GE2/0/7
+ eth-trunk 12
+#
+interface 25GE2/0/8
+ eth-trunk 7
+#
+interface 25GE2/0/9
+#
+interface 25GE2/0/10
+#
+interface 25GE2/0/11
+#
+interface 25GE2/0/12
+#
+interface 25GE2/0/13
+#
+interface 25GE2/0/14
+#
+interface 25GE2/0/15
+#
+interface 25GE2/0/16
+#
+interface 25GE2/0/17
+#
+interface 25GE2/0/18
+#
+interface 25GE2/0/19
+#
+interface 25GE2/0/20
+#
+interface 25GE2/0/21
+#
+interface 25GE2/0/22
+#
+interface 25GE2/0/23
+#
+interface 25GE2/0/24
+#
+interface 25GE2/0/25
+#
+interface 25GE2/0/26
+ description Cetinska 10 Trunk backup
+ port link-type trunk
+ port trunk allow-pass vlan 5 92 304
+#
+interface 25GE2/0/27
+ description Link Coming_DC_Backup
+ port link-type access
+ port default vlan 143
+#
+interface 25GE2/0/28
+ description Link Telekom Storage Secondary
+ port link-type trunk
+ port trunk pvid vlan 620
+ port trunk allow-pass vlan 620
+#
+interface 100GE1/0/1
+#
+interface 100GE1/0/2
+#
+interface 100GE1/0/3
+ undo portswitch
+ ip address 192.168.8.6 255.255.255.252
+#
+interface 100GE1/0/4
+#
+interface 100GE2/0/1
+#
+interface 100GE2/0/2
+#
+interface 100GE2/0/3
+ undo portswitch
+ ip address 192.168.8.2 255.255.255.252
+#
+interface 100GE2/0/4
+#
+interface NULL0
+#
+interface LoopBack0
+ ip address 10.2.0.3 255.255.255.255
+#
+ospf 2 router-id 10.2.0.3
+ import-route direct route-policy FILTER_OSPF
+ import-route static route-policy LOCAL-OSPF-FILTER
+ area 0.0.0.2
+  network 192.168.8.0 0.0.0.3
+  network 192.168.8.4 0.0.0.3
+#
+route-policy FILTER_OSPF permit node 10
+ if-match ip-prefix COMIG-OSPF
+#
+route-policy REDISTRIBUTE-OSPF-MNS permit node 10
+ if-match ip-prefix MNS-OSPF
+#
+route-policy LOCAL-OSPF-FILTER permit node 10
+ if-match ip-prefix LOCAL-OSPF
+#
+ip netstream aggregation protocol-port
+ ip netstream export source 172.27.100.1
+ ip netstream export host 172.27.160.23 2055
+ export version 9
+#
+undo icmp name timestamp-request receive
+#
+ip ip-prefix COMIG-OSPF index 10 permit 172.27.0.0 16
+ip ip-prefix COMIG-OSPF index 20 permit 10.22.20.0 24
+ip ip-prefix COMIG-OSPF index 30 permit 10.160.0.0 12
+ip ip-prefix COMIG-OSPF index 40 permit 162.21.0.0 16
+ip ip-prefix COMIG-OSPF index 50 permit 10.27.130.0 24
+ip ip-prefix COMIG-OSPF index 60 permit 192.168.120.0 21
+ip ip-prefix COMIG-OSPF index 70 permit 10.27.110.0 30
+ip ip-prefix MNS-OSPF index 10 permit 172.27.0.0 16
+ip ip-prefix LOCAL-OSPF index 10 permit 172.27.0.0 16
+ip ip-prefix LOCAL-OSPF index 20 permit 10.22.20.0 24
+ip ip-prefix LOCAL-OSPF index 30 permit 10.160.0.0 12
+ip ip-prefix LOCAL-OSPF index 40 permit 162.21.0.0 16
+ip ip-prefix LOCAL-OSPF index 50 permit 10.27.130.0 24
+ip ip-prefix LOCAL-OSPF index 60 permit 192.168.120.0 21
+ip ip-prefix LOCAL-OSPF index 70 permit 10.27.110.0 30
+ip ip-prefix LOCAL-OSPF index 80 permit 8.8.8.8 32
+ip ip-prefix LOCAL-OSPF index 90 permit 8.8.4.4 32
+ip ip-prefix LOCAL-OSPF index 100 permit 216.239.35.0 32
+ip ip-prefix LOCAL-OSPF index 110 permit 216.239.35.4 32
+ip ip-prefix LOCAL-OSPF index 120 permit 216.239.35.8 32
+ip ip-prefix LOCAL-OSPF index 130 permit 216.239.35.12 32
+ip ip-prefix LOCAL-OSPF index 140 permit 10.45.0.0 16
+ip ip-prefix LOCAL-OSPF index 150 permit 172.16.16.0 24
+ip ip-prefix LOCAL-OSPF index 160 permit 10.1.1.0 24
+#
+ip route-static 0.0.0.0 0.0.0.0 10.27.110.2
+ip route-static 8.8.4.4 255.255.255.255 10.27.110.2
+ip route-static 8.8.8.8 255.255.255.255 10.27.110.2
+ip route-static 10.1.1.0 255.255.255.0 172.27.92.2
+ip route-static 10.4.192.0 255.255.248.0 10.27.110.2
+ip route-static 10.4.198.0 255.255.254.0 10.27.110.2
+ip route-static 10.10.0.0 255.255.0.0 10.27.110.2
+ip route-static 10.20.0.0 255.255.0.0 10.27.110.2
+ip route-static 10.22.20.0 255.255.255.0 172.27.92.2
+ip route-static 10.27.130.0 255.255.255.252 10.27.110.2
+ip route-static 10.44.28.237 255.255.255.255 10.27.110.2
+ip route-static 10.44.29.29 255.255.255.255 10.27.110.2
+ip route-static 10.45.0.0 255.255.0.0 10.27.110.2
+ip route-static 10.67.0.0 255.255.0.0 10.27.110.2
+ip route-static 10.160.0.0 255.240.0.0 10.27.110.2
+ip route-static 10.160.0.0 255.255.0.0 10.27.110.2
+ip route-static 10.176.0.0 255.240.0.0 10.27.110.2
+ip route-static 10.224.0.0 255.252.0.0 10.27.110.2
+ip route-static 18.197.194.254 255.255.255.255 10.27.110.2
+ip route-static 50.7.98.107 255.255.255.255 172.27.1.10
+ip route-static 52.59.21.103 255.255.255.255 10.27.110.2
+ip route-static 74.125.43.109 255.255.255.255 172.27.1.18
+ip route-static 74.125.133.108 255.255.255.255 172.27.1.18
+ip route-static 74.125.143.108 255.255.255.255 172.27.1.18
+ip route-static 77.46.148.26 255.255.255.255 172.27.1.10
+ip route-static 87.237.204.110 255.255.255.255 172.27.1.18
+ip route-static 89.216.35.57 255.255.255.255 172.27.1.10
+ip route-static 91.143.208.42 255.255.255.255 172.27.1.10
+ip route-static 91.206.172.0 255.255.254.0 10.27.110.2
+ip route-static 91.206.173.102 255.255.255.255 10.27.110.2
+ip route-static 91.214.47.7 255.255.255.255 10.27.110.2
+ip route-static 91.222.7.9 255.255.255.255 172.27.1.10
+ip route-static 91.235.52.31 255.255.255.255 172.27.1.10
+ip route-static 93.87.26.184 255.255.255.255 172.27.1.10
+ip route-static 145.243.233.197 255.255.255.255 172.27.1.10
+ip route-static 162.21.0.0 255.255.0.0 10.27.110.2
+ip route-static 162.21.58.0 255.255.255.255 172.27.1.10
+ip route-static 162.21.254.0 255.255.255.255 172.27.1.10
+ip route-static 162.21.255.7 255.255.255.255 172.27.1.10
+ip route-static 172.16.16.0 255.255.255.0 10.27.110.2
+ip route-static 172.27.0.0 255.255.0.0 10.144.0.1 preference 254
+ip route-static 172.27.80.0 255.255.255.0 172.27.1.18
+ip route-static 172.27.81.0 255.255.255.0 172.27.1.18
+ip route-static 172.27.85.0 255.255.255.0 172.27.92.2
+ip route-static 172.27.90.0 255.255.255.0 172.27.1.11
+ip route-static 172.27.91.0 255.255.255.0 172.27.1.11
+ip route-static 172.27.93.0 255.255.255.0 172.27.92.2
+ip route-static 172.27.128.0 255.255.254.0 10.27.110.2
+ip route-static 172.27.130.0 255.255.254.0 10.27.110.2
+ip route-static 172.27.150.0 255.255.255.0 172.27.92.2
+ip route-static 172.27.151.0 255.255.255.0 172.27.92.2
+ip route-static 172.27.152.0 255.255.255.0 172.27.92.2
+ip route-static 172.27.208.0 255.255.255.0 10.27.110.2
+ip route-static 172.27.209.0 255.255.255.0 10.27.110.2
+ip route-static 172.27.210.0 255.255.255.0 10.27.110.2
+ip route-static 172.29.20.0 255.255.255.0 172.27.1.18
+ip route-static 173.194.65.108 255.255.255.255 172.27.1.18
+ip route-static 173.194.70.108 255.255.255.255 172.27.1.24
+ip route-static 173.194.222.108 255.255.255.255 10.27.110.2
+ip route-static 173.194.222.109 255.255.255.255 10.27.110.2
+ip route-static 178.253.194.118 255.255.255.255 172.27.1.10
+ip route-static 185.74.88.10 255.255.255.255 10.27.110.2
+ip route-static 185.74.88.62 255.255.255.255 10.27.110.2
+ip route-static 185.74.88.71 255.255.255.255 10.27.110.2
+ip route-static 185.119.90.19 255.255.255.255 10.27.110.2
+ip route-static 192.162.54.33 255.255.255.255 172.27.1.10
+ip route-static 192.168.50.0 255.255.255.0 10.27.110.2
+ip route-static 192.168.120.0 255.255.248.0 10.27.110.2
+ip route-static 192.168.200.0 255.255.255.0 10.27.110.2
+ip route-static 193.243.169.34 255.255.255.255 172.27.1.10
+ip route-static 194.106.181.76 255.255.255.255 172.27.1.10
+ip route-static 195.178.51.145 255.255.255.255 10.27.110.2
+ip route-static 195.178.54.197 255.255.255.255 172.27.1.18
+ip route-static 195.252.96.3 255.255.255.255 172.27.1.10
+ip route-static 212.77.98.9 255.255.255.255 10.27.110.2
+ip route-static 212.200.100.161 255.255.255.255 172.27.204.18
+ip route-static 212.200.255.221 255.255.255.255 10.27.110.2
+ip route-static 213.180.141.140 255.255.255.255 10.27.110.2
+ip route-static 213.180.149.15 255.255.255.255 10.27.110.2
+ip route-static 216.239.35.0 255.255.255.255 10.27.110.2
+ip route-static 216.239.35.4 255.255.255.255 10.27.110.2
+ip route-static 216.239.35.8 255.255.255.255 10.27.110.2
+ip route-static 216.239.35.12 255.255.255.255 10.27.110.2
+ip route-static 217.26.70.110 255.255.255.255 172.27.1.10
+#
+snmp-agent
+snmp-agent local-engineid 800007DB0360CE41432110
+snmp-agent community read cipher %^%#p)od(J/9}=Z0!RG|=9j;A4HUI\S)o8,nMFZV-Rr/:0_.HN/zSS%Li7V`c+G19`3&3%1zaRHi>k7)T09>%^%#
+snmp-agent sys-info version v2c
+undo snmp-agent sys-info version v3
+undo snmp-agent protocol source-status all-interface
+snmp-agent protocol source-interface Vlanif3
+undo snmp-agent protocol source-status ipv6 all-interface
+#
+stelnet server enable
+ssh server-source all-interface
+ssh server cipher aes256_ctr aes128_ctr
+ssh server hmac sha2_256
+ssh server key-exchange dh_group16_sha512 dh_group15_sha512 dh_group14_sha256 dh_group_exchange_sha256
+ssh client cipher aes256_ctr aes128_ctr
+ssh client hmac sha2_256
+ssh client key-exchange dh_group16_sha512 dh_group15_sha512 dh_group14_sha256 dh_group_exchange_sha256
+ssh server dh-exchange min-len 2048
+ssh server publickey rsa_sha2_512 rsa_sha2_256
+#
+user-interface con 0
+ authentication-mode password
+ set authentication password cipher $1c$OHtr4bX631$r:Xt=lkfuMc!V87KZHq3@"1.RX6:RUu)b(//IjD4$
+user-interface vty 0 4
+ authentication-mode aaa
+ user privilege level 15
+ protocol inbound all
+user-interface vty 16 20
+ authentication-mode aaa
+ protocol inbound all
+#
+wlan
+ traffic-profile name default
+ security-profile name default
+ security-profile name default-wds
+ security-profile name default-mesh
+ ssid-profile name default
+ vap-profile name default
+ wds-profile name default
+ mesh-handover-profile name default
+ mesh-profile name default
+ regulatory-domain-profile name default
+ air-scan-profile name default
+ rrm-profile name default
+ radio-2g-profile name default
+ radio-5g-profile name default
+ wids-spoof-profile name default
+ wids-whitelist-profile name default
+ wids-profile name default
+ ap-system-profile name default
+ port-link-profile name default
+ wired-port-profile name default
+ ap-group name default
+ provision-ap
+#
+dot1x-access-profile name dot1x_access_profile
+#
+mac-access-profile name mac_access_profile
+#
+ops
+#
+remote-unit
+#
+return
