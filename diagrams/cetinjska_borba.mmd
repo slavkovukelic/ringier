@@ -4,7 +4,7 @@ flowchart LR
 subgraph CET["CETINJSKA · TELEKOM OPP"]
 direction TB
   CET1["port 1 — SDI\n(Ruijie P6 · YB Matrica)"]:::sdi
-  CET2["port 2 — SDI\n(Ruijie P6 · YB Matrica)"]:::sdi
+  CET2["port 2 — bidi\n(Ruijie P6 · YB Matrica)"]:::bidi
   CET5["port 5 — SDI (novo)\n↳ kroz STUD. TRG"]:::sdi
   CET6["port 6 — bidi (novo)\n↳ kroz STUD. TRG"]:::bidi
 end
@@ -12,7 +12,7 @@ end
 subgraph BOR["BORBA · TELEKOM OPP"]
 direction TB
   BOR1["port 1 — SDI\n(Huawei SW P1 SFP28 · BM Matrica)"]:::sdi
-  BOR2["port 2 — SDI\n(Huawei SW P1 SFP28 · BM Matrica)"]:::sdi
+  BOR2["port 2 — bidi\n(Huawei SW P1 SFP28 · BM Matrica)"]:::bidi
   BOR5["port 5 — SDI (novo)\n↳ kroz STUD. TRG"]:::sdi
   BOR6["port 6 — bidi (novo)\n↳ kroz STUD. TRG"]:::bidi
 end
